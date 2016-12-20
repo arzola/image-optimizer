@@ -10,3 +10,4 @@ Features
 - API interface
 - You can host on your server
 - Laravel Queue Jobs
+- Fluent
