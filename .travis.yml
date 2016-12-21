@@ -17,7 +17,7 @@ matrix:
     - php: 5.6
       env: setup=stable
 
-sudo: false
+sudo: true
 
 cache:
   directories:
@@ -39,6 +39,10 @@ before_script:
   - mkdir storage/app/compressed
   - mkdir storage/app/remote
   - mkdir storage/app/resized
-  - chmod -R 777 storage
+  - sudo chmod -R 777 storage
+
+addons:
+  hosts:
+  - imageoptim.dev
 
 script: vendor/bin/phpunit
