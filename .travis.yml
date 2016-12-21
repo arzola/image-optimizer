@@ -34,13 +34,12 @@ install:
   - if [[ $setup = 'lowest' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable --no-suggest; fi
 
 before_script:
-  - cp .env.travis .env
-  - composer install --no-interaction
-  - php artisan key:generate
-  - mkdir storage/app/compressed
-  - mkdir storage/app/remote
-  - mkdir storage/app/resized
-  - chmod -R 770 storage
+  - travis_retry cp .env.travis .env
+  - travis_retry php artisan key:generate
+  - travis_retry mkdir storage/app/compressed
+  - travis_retry mkdir storage/app/remote
+  - travis_retry mkdir storage/app/resized
+  - travis_retry chmod -R 770 storage
 
 addons:
   hosts:
