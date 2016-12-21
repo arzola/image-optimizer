@@ -12,7 +12,7 @@ use Intervention\Image\Facades\Image;
 class Optimizer extends Controller
 {
 
-    const EXTENSION_DOT_LENGHT = -4;
+    const EXTENSION_DOT_LENGTH = -4;
 
     public function resizepost(Request $request, ImageOptimizer $imageOptimizer)
     {
@@ -21,7 +21,7 @@ class Optimizer extends Controller
         $height = ($request->get('height')) ? $request->get('height') : null;
         $imageOptimizer->optimizeUploadedImageFile($pic);
         $newName = substr_replace($pic->getClientOriginalName(),
-            $this->getName($width, $height) . '.' . $pic->getClientOriginalExtension(), self::EXTENSION_DOT_LENGHT);
+            $this->getName($width, $height) . '.' . $pic->getClientOriginalExtension(), self::EXTENSION_DOT_LENGTH);
         Storage::put('compressed/' . $newName, File::get($pic));
         $img = Image::make(storage_path('app/compressed/') . $newName);
         $img->resize($width, $height, function ($constraint) {
