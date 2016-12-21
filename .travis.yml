@@ -34,9 +34,11 @@ install:
 before_script:
   - cp .env.travis .env
   - php artisan key:generate
+  - chmod -R 777 storage
   - mkdir storage/app/compressed
   - pwd
-  - cd storage/app/compressed
+  - touch storage/app/compressed/test.log
+  - ls storage/app/compressed
   - mkdir storage/app/remote
   - mkdir storage/app/resized
   - chmod -R 777 storage
