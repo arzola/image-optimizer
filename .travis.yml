@@ -2,8 +2,6 @@ language: php
 
 php:
   - 5.6
-  - 7.0
-  - 7.1
 
 env:
   global:
@@ -32,12 +30,14 @@ install:
   - if [[ $setup = 'basic' ]]; then travis_retry composer install --no-interaction --prefer-dist --no-suggest; fi
   - if [[ $setup = 'stable' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-stable --no-suggest; fi
   - if [[ $setup = 'lowest' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable --no-suggest; fi
+
+before_script:
   - cp .env.travis .env
   - php artisan key:generate
   - mkdir storage/app/compressed
   - mkdir storage/app/remote
   - mkdir storage/app/resized
-  - chmod -R 770 storage
+  - chmod -R 777 storage
 
 addons:
   hosts:
