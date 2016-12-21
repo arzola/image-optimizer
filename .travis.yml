@@ -35,8 +35,8 @@ install:
   - cp .env.travis .env
   - php artisan key:generate
   - mkdir storage/app/compressed
-  - storage/app/remote
-  - storage/app/resized
+  - mkdir storage/app/remote
+  - mkdir storage/app/resized
   - chmod -R 770 storage
 
 addons:
