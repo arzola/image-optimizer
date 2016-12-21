@@ -2,6 +2,8 @@ language: php
 
 php:
   - 5.6
+  - 7.0
+  - 7.1
 
 env:
   global:
@@ -41,6 +43,7 @@ install:
   - sudo chmod a+x /usr/local/bin/gifsicle
 
 before_script:
+  - phpenv config-add travis.php.ini
   - cp .env.travis .env
   - php artisan key:generate
   - mkdir storage/app/compressed
