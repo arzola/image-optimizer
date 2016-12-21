@@ -2,7 +2,7 @@
 ### Google Pagespeed friendly
 
 [![Build Status](https://scrutinizer-ci.com/g/arzola/image-optimizer/badges/build.png?b=master)](https://scrutinizer-ci.com/g/arzola/image-optimizer/build-status/master)
-
+[![Build Status](https://travis-ci.org/arzola/image-optimizer.svg?branch=master)](https://travis-ci.org/arzola/image-optimizer)
 This laravel app provide a sweet API to optimize and resize images with a simple http call.
 
 This package use the awesome wrapper [Laravel Imageoptimizer](https://github.com/approached/laravel-image-optimizer) to handle image transformations.
