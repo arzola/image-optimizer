@@ -17,7 +17,7 @@ matrix:
     - php: 5.6
       env: setup=stable
 
-sudo: true
+sudo: false
 
 cache:
   directories:
@@ -39,7 +39,7 @@ before_script:
   - mkdir storage/app/compressed
   - mkdir storage/app/remote
   - mkdir storage/app/resized
-  - sudo chmod -R 777 storage
+  - chmod -R 770 storage
 
 addons:
   hosts:
