@@ -34,6 +34,7 @@ install:
   - if [[ $setup = 'lowest' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable --no-suggest; fi
 
 before_script:
+  - mkdir storage/app
   - mkdir storage/app/compressed
   - mkdir storage/app/remote
   - mkdir storage/app/resized
