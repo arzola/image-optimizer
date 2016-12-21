@@ -4,23 +4,56 @@ namespace App\Http\Controllers;
 
 use Approached\LaravelImageOptimizer\ImageOptimizer;
 use File;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
 class Optimizer extends Controller
 {
-    public function down(Request $request, ImageOptimizer $imageOptimizer)
+    public function resizepost(Request $request, ImageOptimizer $imageOptimizer)
     {
         $pic = $request->file('picture');
-        //first resize to max limit
+        $width = ($request->get('width')) ? $request->get('width') : 640;
+        $height = ($request->get('height')) ? $request->get('height') : null;
         $imageOptimizer->optimizeUploadedImageFile($pic);
-        $newName = str_random(20) . '.' . $pic->getClientOriginalExtension();
+        $newName = substr_replace($pic->getClientOriginalName(),
+            $this->getName($width, $height) . '.' . $pic->getClientOriginalExtension(), -4);
         Storage::put('compressed/' . $newName, File::get($pic));
         $img = Image::make(storage_path('app/compressed/') . $newName);
-        $img->resize(1000, null, function ($constraint) {
+        $img->resize($width, $height, function ($constraint) {
             $constraint->aspectRatio();
         });
         $img->save(storage_path('app/resized/') . $newName);
+    }
+
+    public function resizeremote(Request $request, ImageOptimizer $imageOptimizer)
+    {
+        $pic = $request->get('image');
+        $width = ($request->get('width')) ? $request->get('width') : 640;
+        $height = ($request->get('height')) ? $request->get('height') : null;
+        $file = storage_path('app/remote/') . basename($pic);
+        $client = new Client();
+        $client->request('GET', $pic, [
+            'sink' => storage_path('app/remote/') . basename($pic),
+        ]);
+        $imageOptimizer->optimizeImage($file);
+        $img = Image::make($file);
+        $img->resize($width, $height, function ($constraint) {
+            $constraint->aspectRatio();
+        });
+        return $img->response();
+    }
+
+    private function getName($w, $h)
+    {
+        $postfix = '_';
+        if ($w) {
+            $postfix .= 'w' . $w;
+        }
+        if ($h) {
+            $postfix .= 'h' . $h;
+        }
+        return $postfix;
     }
 }
