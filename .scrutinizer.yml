@@ -5,6 +5,7 @@ build:
     tests:
         before:
             - cp .env.travis .env
+            - composer install --no-interaction
             - mkdir storage/app/compressed
             - mkdir storage/app/resized
             - mkdir storage/app/remote

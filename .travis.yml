@@ -35,6 +35,7 @@ install:
 
 before_script:
   - cp .env.travis .env
+  - composer install --no-interaction
   - php artisan key:generate
   - mkdir storage/app/compressed
   - mkdir storage/app/remote
