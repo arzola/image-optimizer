@@ -35,6 +35,8 @@ before_script:
   - cp .env.travis .env
   - php artisan key:generate
   - mkdir storage/app/compressed
+  - pwd
+  - cd storage/app/compressed
   - mkdir storage/app/remote
   - mkdir storage/app/resized
   - chmod -R 777 storage
