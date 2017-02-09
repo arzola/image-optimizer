@@ -16,3 +16,4 @@ Route::get('/', function () {
 });
 
 Route::get('/optimize', 'Optimizer@resizeremote');
+Route::post('/api/optimize', 'Optimizer@resizepost');

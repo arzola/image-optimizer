@@ -27,7 +27,8 @@ class Optimizer extends Controller
         $img->resize($width, $height, function ($constraint) {
             $constraint->aspectRatio();
         });
-        $img->save(storage_path('app/resized/') . $newName);
+        unlink(storage_path('app/compressed/') . $newName);
+        return $img->response();
     }
 
     public function resizeremote(Request $request, ImageOptimizer $imageOptimizer)
