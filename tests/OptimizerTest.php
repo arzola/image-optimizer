@@ -45,7 +45,7 @@ class OptimizerTest extends TestCase
         $this->call('POST', '/api/optimize', [], [], ['picture' => $image]);
         $file = storage_path('app/resized/') . 'example_w640.jpg';
         list($width) = getimagesize($file);
-        $this->assertEquals($expectedWidth, $width, 'The size of resized image is not equal to expected');
+        $this->assertEquals($expectedWidth, $width, 'The width of resized image is not equal to expected');
     }
 
     public function test_if_image_height_is_100()
@@ -55,7 +55,17 @@ class OptimizerTest extends TestCase
         $this->call('POST', '/api/optimize', ['height' => 100], [], ['picture' => $image]);
         $file = storage_path('app/resized/') . 'example_w640h100.jpg';
         list($width, $height) = getimagesize($file);
-        $this->assertEquals($expectedHeight, $height, 'The size of resized image is not equal to expected');
+        $this->assertEquals($expectedHeight, $height, 'The height of resized image is not equal to expected');
+    }
+
+    public function test_if_small_image_is_not_upsized()
+    {
+        $image = $this->getSmallUploadedImage();
+        $expectedWidth = 300;
+        $this->call('POST', '/api/optimize', ['width' => 600], [], ['picture' => $image]);
+        $file = storage_path('app/resized/') . 'example-small_w600.jpg';
+        list($width) = getimagesize($file);
+        $this->assertEquals($expectedWidth, $width, 'The size of resized image is not equal to expected because was upsized');
     }
 
     public function test_resize_remote_image_to_default()
@@ -76,6 +86,20 @@ class OptimizerTest extends TestCase
         unlink(storage_path('app/compressed/') . 'test_' . basename($image));
         $this->assertResponseOk();
         $this->assertEquals($expectedWidth, $width, 'The size of resized image is not equal to expected');
+    }
+
+
+    public function test_resize_remote_image_width_when_is_400_is_not_upsized()
+    {
+        $image = $this->getDownloadedImage();
+        $expectedWidth = 400;
+        $resizeTo = 600;
+        $response = $this->call('GET', '/optimize?image=' . 'https://dummyimage.com/400x400/000/fff.jpg' . '&width=' . $resizeTo);
+        Storage::put('compressed/test_' . basename($image), $response->getContent());
+        list($width, $height) = getimagesize(storage_path('app/compressed/') . 'test_' . basename($image));
+        unlink(storage_path('app/compressed/') . 'test_' . basename($image));
+        $this->assertResponseOk();
+        $this->assertEquals($expectedWidth, $width, 'The size of resized image is not equal to expected because was upsized');
     }
 
 

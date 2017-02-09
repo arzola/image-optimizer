@@ -9,6 +9,7 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
      */
     protected $baseUrl = 'http://imageoptim.dev';
     protected $tempUploadedFile;
+    protected $tempUploadedSmallFile;
 
     /**
      * Creates the application.
@@ -31,11 +32,16 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
         $tempFile = sys_get_temp_dir() . '/example.jpg';
         copy($example, $tempFile);
         $this->tempUploadedFile = $tempFile;
+        $exampleSmall = __DIR__ . '/fakedata/example-small.jpg';
+        $tempFileSmall = sys_get_temp_dir() . '/example-small.jpg';
+        copy($exampleSmall, $tempFileSmall);
+        $this->tempUploadedSmallFile = $tempFileSmall;
     }
 
     public function tearDown()
     {
         unlink($this->tempUploadedFile);
+        unlink($this->tempUploadedSmallFile);
         collect(Storage::allFiles('compressed'))->each(function ($file) {
             unlink(storage_path('app/') . $file);
         });
@@ -52,6 +58,12 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     {
         return new \Illuminate\Http\UploadedFile($this->tempUploadedFile, 'example.jpg',
             filesize($this->tempUploadedFile), 'image/jpeg', null, true);
+    }
+
+    public function getSmallUploadedImage()
+    {
+        return new \Illuminate\Http\UploadedFile($this->tempUploadedSmallFile, 'example-small.jpg',
+            filesize($this->tempUploadedSmallFile), 'image/jpeg', null, true);
     }
 
     public function getDownloadedImage()
