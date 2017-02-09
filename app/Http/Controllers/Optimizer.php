@@ -26,8 +26,11 @@ class Optimizer extends Controller
         $img = Image::make(storage_path('app/compressed/') . $newName);
         $img->resize($width, $height, function ($constraint) {
             $constraint->aspectRatio();
+            $constraint->upsize();
         });
         $img->save(storage_path('app/resized/') . $newName);
+        unlink(storage_path('app/compressed/') . $newName);
+        return $img->response();
     }
 
     public function resizeremote(Request $request, ImageOptimizer $imageOptimizer)
@@ -44,6 +47,7 @@ class Optimizer extends Controller
         $img = Image::make($file);
         $img->resize($width, $height, function ($constraint) {
             $constraint->aspectRatio();
+            $constraint->upsize();
         });
         return $img->response();
     }
