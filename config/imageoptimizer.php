@@ -21,7 +21,7 @@ return [
         'gifsicle_options' => ['-b', '-O5'],
 
         'jpegoptim_bin'     => '/usr/local/bin/jpegoptim',
-        'jpegoptim_options' => ['--strip-all'],
+        'jpegoptim_options' => ['--strip-all','--size=500'],
 
     ],
 
