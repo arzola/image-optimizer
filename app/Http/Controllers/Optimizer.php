@@ -16,21 +16,28 @@ class Optimizer extends Controller
 
     public function resizepost(Request $request, ImageOptimizer $imageOptimizer)
     {
-        $pic = $request->file('picture');
-        $width = ($request->get('width')) ? $request->get('width') : 640;
-        $height = ($request->get('height')) ? $request->get('height') : null;
-        $imageOptimizer->optimizeUploadedImageFile($pic);
-        $newName = substr_replace($pic->getClientOriginalName(),
-            $this->getName($width, $height) . '.' . $pic->getClientOriginalExtension(), self::EXTENSION_DOT_LENGTH);
-        Storage::put('compressed/' . $newName, File::get($pic));
-        $img = Image::make(storage_path('app/compressed/') . $newName);
-        $img->resize($width, $height, function ($constraint) {
-            $constraint->aspectRatio();
-            $constraint->upsize();
-        });
-        $img->save(storage_path('app/resized/') . $newName);
-        unlink(storage_path('app/compressed/') . $newName);
-        return $img->response();
+        try {
+            $pic = $request->file('picture');
+            $width = ($request->get('width')) ? $request->get('width') : 640;
+            $height = ($request->get('height')) ? $request->get('height') : null;
+            $imageOptimizer->optimizeUploadedImageFile($pic);
+            $newName = substr_replace($pic->getClientOriginalName(),
+                $this->getName($width, $height) . '.' . $pic->getClientOriginalExtension(), self::EXTENSION_DOT_LENGTH);
+            Storage::put('compressed/' . $newName, File::get($pic));
+            $img = Image::make(storage_path('app/compressed/') . $newName);
+            $resize = $img->resize($width, $height, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+            if ($resize) {
+                $img->save(storage_path('app/resized/') . $newName);
+                unlink(storage_path('app/compressed/') . $newName);
+                return $img->response();
+            }
+        } catch (\Exception $e) {
+            return response()->json(['bad_input' => 'The input image is corrupted'], 204);
+        }
+        return response()->json(['bad_input' => 'The input image is corrupted'], 204);
     }
 
     public function resizeremote(Request $request, ImageOptimizer $imageOptimizer)
@@ -45,11 +52,14 @@ class Optimizer extends Controller
         ]);
         $imageOptimizer->optimizeImage($file);
         $img = Image::make($file);
-        $img->resize($width, $height, function ($constraint) {
+        $resize = $img->resize($width, $height, function ($constraint) {
             $constraint->aspectRatio();
             $constraint->upsize();
         });
-        return $img->response();
+        if ($resize) {
+            return $img->response();
+        }
+        return response()->json(['bad_input' => 'The input image is corrupted']);
     }
 
     private function getName($w, $h)

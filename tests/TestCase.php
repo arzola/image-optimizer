@@ -10,6 +10,7 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     protected $baseUrl = 'http://imageoptim.dev';
     protected $tempUploadedFile;
     protected $tempUploadedSmallFile;
+    protected $tempCorruptedUploadedFile;
 
     /**
      * Creates the application.
@@ -36,21 +37,18 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
         $tempFileSmall = sys_get_temp_dir() . '/example-small.jpg';
         copy($exampleSmall, $tempFileSmall);
         $this->tempUploadedSmallFile = $tempFileSmall;
+        $corruptedImage = __DIR__ . '/fakedata/badimage.jpg';
+        $tempCorruptedFileSmall = sys_get_temp_dir() . '/badimage.jpg';
+        copy($corruptedImage, $tempCorruptedFileSmall);
+        $this->tempCorruptedUploadedFile = $tempCorruptedFileSmall;
     }
 
     public function tearDown()
     {
         unlink($this->tempUploadedFile);
         unlink($this->tempUploadedSmallFile);
-        collect(Storage::allFiles('compressed'))->each(function ($file) {
-            unlink(storage_path('app/') . $file);
-        });
-        collect(Storage::allFiles('remote'))->each(function ($file) {
-            unlink(storage_path('app/') . $file);
-        });
-        collect(Storage::allFiles('resized'))->each(function ($file) {
-            unlink(storage_path('app/') . $file);
-        });
+        unlink($this->tempCorruptedUploadedFile);
+
         parent::tearDown();
     }
 
@@ -64,6 +62,12 @@ abstract class TestCase extends Illuminate\Foundation\Testing\TestCase
     {
         return new \Illuminate\Http\UploadedFile($this->tempUploadedSmallFile, 'example-small.jpg',
             filesize($this->tempUploadedSmallFile), 'image/jpeg', null, true);
+    }
+
+    public function getUploadedCorruptImage()
+    {
+        return new \Illuminate\Http\UploadedFile($this->tempCorruptedUploadedFile, 'badimage.jpg',
+            filesize($this->tempCorruptedUploadedFile), 'image/jpeg', null, true);
     }
 
     public function getDownloadedImage()

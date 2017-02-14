@@ -14,13 +14,13 @@ return [
     'options' => [
         'ignore_errors' => false,
 
-        'pngquant_bin'     => '/usr/local/bin/pngquant',
+        'pngquant_bin'     => env('IMAGE_PNG','/home/icodeos/image.icode.mx/bin/pngquant'),
         'pngquant_options' => ['--force'],
 
-        'gifsicle_bin'     => '/usr/local/bin/gifsicle',
+        'gifsicle_bin'     => env('IMAGE_GIF','/usr/local/bin/gifsicle'),
         'gifsicle_options' => ['-b', '-O5'],
 
-        'jpegoptim_bin'     => '/usr/local/bin/jpegoptim',
+        'jpegoptim_bin'     => env('IMAGE_JPG','/home/icodeos/image.icode.mx/bin/jpegoptim'),
         'jpegoptim_options' => ['--strip-all','--size=500'],
 
     ],

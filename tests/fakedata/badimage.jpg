@@ -1,0 +1,6 @@
+/var/www/html/educacion/storage/app/uploads/public
+
+El dia de ayer se realizo la integración de un optimizador de imagenes que reduce el tamaño de los archivos jpg y png con el fin de que sean ligeros y rápidos de acuerdo a los lineamientos establecidos por Google Page Speed (https://developers.google.com/speed/docs/insights/OptimizeImages?hl=es-419) esta optimización se "encola" al momento de guardar un nuevo elemento y se procesa conforme la carga del servidor de optimización, debido a la demanda el servidor de optimización se saturó y se quedó sin ancho de banda para dar servicio durante el transcurso de la tarde-noche a las 11:00 am del día de hoy, esto causo un desbordamiento en el procesamiento de las imagenes y se re-escribieron con un contenido nulo ya hemos solucionado el problema del servidor y agregamos un nuevo esquema de procesamiento que evita que las imagenes por cualquier razón se corrompan y se mantengan integras siempre, otro punto a considerar es que nuestro servidor de respaldo DRP que crea una copia de los sitios en las noches y este guardo el contenido de las imagenes vacias por lo tanto no pudimos restarurar la copia de seguridad, realmente lamentamos este incidente
+
+
+ \DB::table('icodemx_tracelog_logs')->where('traceable_id',37)->orderBy('created_at','DESC')->get()
